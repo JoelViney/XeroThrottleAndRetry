@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading.Tasks;
 
-namespace ThrottlerAndRetrier
+namespace XeroThrottleAndRetry
 {
     // Test that the retry method actually attempts to retry on failure.
     [TestClass]

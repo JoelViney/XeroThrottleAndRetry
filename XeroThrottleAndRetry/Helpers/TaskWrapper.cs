@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ThrottlerAndRetrier.Helpers
+namespace XeroThrottleAndRetry.Helpers
 {
     internal class TaskWrapper
     {

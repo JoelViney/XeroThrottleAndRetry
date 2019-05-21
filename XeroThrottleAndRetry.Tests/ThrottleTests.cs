@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading.Tasks;
+using XeroThrottleAndRetry.Helper;
 
-namespace ThrottlerAndRetrier
+namespace XeroThrottleAndRetry
 {
     // We need to assure that these calls are throttled and it takes over a second to run two in a row.
     [TestClass]

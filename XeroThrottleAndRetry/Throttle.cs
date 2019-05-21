@@ -1,12 +1,19 @@
-﻿using ThrottlerAndRetrier.Helpers;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using XeroThrottleAndRetry.Helper;
+using XeroThrottleAndRetry.Helpers;
 
-namespace ThrottlerAndRetrier
+namespace XeroThrottleAndRetry
 {
-    /// <summary>Limits the amount of calls for a set amount of time. e.g. 60 calls in 60 seconds.</summary>
+    /// <summary>
+    /// Limits the amount of calls for a set amount of time. e.g. 60 calls in 60 seconds.
+    /// 
+    /// How to use:
+    /// await Throttle.DoAsync(() => this.MyMethod());
+    /// or 
+    /// var result = await Throttle.DoAsync<int>(() => this.MyMethod());
+    /// </summary>
     public static class Throttle
     {
         private const int CallLimit = 60;        // 60 calls in...

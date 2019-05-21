@@ -1,21 +1,13 @@
-﻿using ThrottlerAndRetrier.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using XeroThrottleAndRetry.Helpers;
 
-namespace ThrottlerAndRetrier
+namespace XeroThrottleAndRetry.Helper
 {
     /// <summary>
-    /// Throttles the calls that pass through this helper to 1 call a second.
-    /// 
-    /// There are limits to the number of API calls that your application can make against a particular Xero organisation.
-    ///     * Minute Limit: 60 calls in a rolling 60 second window
-    ///     * Daily Limit: 5000 calls in a rolling 24 hour window (200 calls an hour, 3.4xx calls a minute)...
-    ///     
-    /// If you exceed either rate limit you will receive a HTTP 503 (Service Unavailable) response with the following message in the http response body:
-    /// 
-    /// https://developer.xero.com/documentation/auth-and-limits/xero-api-limits
+    /// This instance exists so we can write tests around it. You should call the static Throtlle class.
     /// </summary>
     public class ThrottleInstance
     {

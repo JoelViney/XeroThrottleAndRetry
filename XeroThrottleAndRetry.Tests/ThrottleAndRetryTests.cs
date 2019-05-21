@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 
-namespace ThrottlerAndRetrier
+namespace XeroThrottleAndRetry
 {
     [TestClass]
     public class ThrottleAndRetryTests

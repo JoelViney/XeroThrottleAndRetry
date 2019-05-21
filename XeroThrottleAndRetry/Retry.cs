@@ -1,21 +1,21 @@
-﻿using ThrottlerAndRetrier.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XeroThrottleAndRetry.Helpers;
 
-namespace ThrottlerAndRetrier
+namespace XeroThrottleAndRetry
 {
     /// <summary>
     /// Provides Retry on error functionality with minimal impact on the calling code.
     /// 
     /// How to use:
-    /// Retry.DoAsync(() => this.MyMethod());
+    /// await Retry.DoAsync(() => this.MyMethod());
     /// or 
-    /// var result = Retry.DoAsync<int>(() => this.MyMethod());
+    /// var result = await Retry.DoAsync<int>(() => this.MyMethod());
     /// </summary>
     public static class Retry
     {
-        private const int RetryIntervalMilliseconds = 1000;
+        private const int RetryIntervalMilliseconds = 1000; // By default wait 4 second, then 9 seconds before attempting again...
         private const int MaximumAttempts = 3;
 
         /// <summary>Attempts to execute the provided delegate Task 3 times and returns the specified value.</summary>
@@ -29,7 +29,6 @@ namespace ThrottlerAndRetrier
                 {
                     if (attempts > 1)
                     {
-                        // By default wait 4 second, then 9 seconds before attempting again...
                         await Task.Delay(retryIntervalMilliseconds * ((attempts + 1) * (attempts + 1)));
                     }
 

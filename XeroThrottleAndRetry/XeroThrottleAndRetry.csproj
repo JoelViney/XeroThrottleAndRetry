@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RootNamespace>ThrottlerAndRetrier</RootNamespace>
+    <RootNamespace>XeroThrottleAndRetry</RootNamespace>
   </PropertyGroup>
 
 </Project>

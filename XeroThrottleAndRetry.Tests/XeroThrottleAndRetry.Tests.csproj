@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>ThrottlerAndRetrier</RootNamespace>
+    <RootNamespace>XeroThrottleAndRetry</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
