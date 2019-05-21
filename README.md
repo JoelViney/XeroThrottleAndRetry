@@ -15,6 +15,9 @@ This method will retry a failed call after sleeping for abit.
 Implements  both Throttling and Retrying.
 
 How to use:
-await ThrottleAndRetry.DoAsync(() => this.MyMethod());
+
+await ThrottleAndRetry.DoAsync(() => _xeroCoreApi.Something.DoSomething(123));
+
 or 
-var result = await ThrottleAndRetry.DoAsync<int>(() => this.MyMethod());
+
+var result = await ThrottleAndRetry.DoAsync<int>(() => _xeroCoreApi.Something.GetList("abc"));
