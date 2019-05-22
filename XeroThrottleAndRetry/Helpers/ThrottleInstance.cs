@@ -27,33 +27,38 @@ namespace XeroThrottleAndRetry.Helper
         {
             await _semaphore.WaitAsync();
 
-            if (_callTickStack.Count >= _callLimit)
+            try
             {
-                long nowTicks = DateTime.UtcNow.Ticks;
-                var callAtLimitTicks = _callTickStack.Peek();
-
-                TimeSpan timeSpan = TimeSpan.FromTicks(nowTicks - callAtLimitTicks);
-
-                var callLimitMilliseconds = _callLimitSeconds * 1000;
-                if (timeSpan.TotalMilliseconds < callLimitMilliseconds)
+                if (_callTickStack.Count >= _callLimit)
                 {
-                    var millisecondsDelay = (int)(callLimitMilliseconds - Math.Round(timeSpan.TotalMilliseconds));
-                    await Task.Delay(millisecondsDelay);
+                    long nowTicks = DateTime.UtcNow.Ticks;
+                    var callAtLimitTicks = _callTickStack.Peek();
+
+                    TimeSpan timeSpan = TimeSpan.FromTicks(nowTicks - callAtLimitTicks);
+
+                    var callLimitMilliseconds = _callLimitSeconds * 1000;
+                    if (timeSpan.TotalMilliseconds < callLimitMilliseconds)
+                    {
+                        var millisecondsDelay = (int)(callLimitMilliseconds - Math.Round(timeSpan.TotalMilliseconds));
+                        await Task.Delay(millisecondsDelay);
+                    }
                 }
-            }
 
-            var executionTimeTicks = DateTime.UtcNow.Ticks;
-            _callTickStack.Enqueue(executionTimeTicks);
-            if (_callTickStack.Count > _callLimit)
+                var executionTimeTicks = DateTime.UtcNow.Ticks;
+                _callTickStack.Enqueue(executionTimeTicks);
+                if (_callTickStack.Count > _callLimit)
+                {
+                    _callTickStack.Dequeue(); // We only need to track the last 60 calls
+                }
+
+                var task = await func();
+
+                return task;
+            }
+            finally
             {
-                _callTickStack.Dequeue(); // We only need to track the last 60 calls
+                _semaphore.Release();
             }
-
-            var task = await func();
-
-            _semaphore.Release();
-
-            return task;
         }
 
         /// <summary>Attempts to execute the provided delegate Task 3 times.</summary>

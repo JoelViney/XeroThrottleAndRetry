@@ -26,13 +26,17 @@ namespace XeroThrottleAndRetry
         public static async Task<T> DoAsync<T>(Func<Task<T>> func)
         {
             await _semaphore.WaitAsync();
-
-            if (_throttleInstance == null)
+            try
             {
-                _throttleInstance = new ThrottleInstance(CallLimit, CallLimitSeconds);
+                if (_throttleInstance == null)
+                {
+                    _throttleInstance = new ThrottleInstance(CallLimit, CallLimitSeconds);
+                }
             }
-
-            _semaphore.Release();
+            finally
+            {
+                _semaphore.Release();
+            }
 
             return await _throttleInstance.DoAsync(func);
         }
