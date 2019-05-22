@@ -84,5 +84,52 @@ namespace XeroThrottleAndRetry
                 Assert.AreEqual(3, ex.InnerExceptions.Count);
             }
         }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(AggregateException))]
+        public async Task ExceptionsAggregatedTest()
+        {
+            // Arrange
+            var attempts = 0;
+
+            // Act
+            await Retry.DoAsync(() =>
+            {
+                attempts++;
+
+                if (attempts == 1)
+                {
+                    throw new Exception("I fell down and I cant get up.");
+                }
+                else
+                {
+                    throw new Exception("He fell down and he cant get up.");
+                }
+            }
+            );
+
+            // Assert
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(StackOverflowException))]
+        public async Task OnlySendOneIdenticalExceptionTest()
+        {
+            // Arrange
+            var attempts = 0;
+
+            // Act
+            await Retry.DoAsync(() =>
+            {
+                attempts++;
+
+                throw new StackOverflowException("I fell down and I cant get up.");
+            }
+            );
+
+            // Assert
+        }
     }
 }

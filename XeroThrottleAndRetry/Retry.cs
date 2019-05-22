@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using XeroThrottleAndRetry.Helpers;
 
@@ -38,6 +39,21 @@ namespace XeroThrottleAndRetry
                 {
                     exceptions.Add(ex);
                 }
+            }
+
+            bool different = false;
+            foreach (var ex in exceptions.Skip(1))
+            {
+                if (exceptions[0].ToString() != ex.ToString())
+                {
+                    different = true;
+                    break;
+                }
+            }
+
+            if (!different)
+            {
+                throw exceptions[0];
             }
 
             throw new AggregateException(exceptions);
