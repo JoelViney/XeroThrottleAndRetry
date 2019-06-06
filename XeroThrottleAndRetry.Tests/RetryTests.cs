@@ -65,26 +65,18 @@ namespace XeroThrottleAndRetry
         }
 
         [TestMethod]
-        public async Task FailAndThrewAggregateExceptionTest()
+        [ExpectedException(typeof(OutOfMemoryException))]
+        public async Task FailedWithSameExceptionsReturnsNonAggregateExceptionTest()
         {
             // Arrange
             Task ExecuteAndFailAsync()
             {
-                throw new Exception("I fell over and can't get up.");
+                throw new OutOfMemoryException("I fell over and can't get up.");
             }
 
             // Act
-            try
-            {
-                await Retry.DoAsync(() => ExecuteAndFailAsync(), retryIntervalMilliseconds: 3, maximumAttempts: 3);
-            }
-            catch (AggregateException ex)
-            {
-                // Assert
-                Assert.AreEqual(3, ex.InnerExceptions.Count);
-            }
+            await Retry.DoAsync(() => ExecuteAndFailAsync(), RetryIntervalMilliseconds, MaximumAttempts);
         }
-
 
         [TestMethod]
         [ExpectedException(typeof(AggregateException))]
@@ -106,8 +98,7 @@ namespace XeroThrottleAndRetry
                 {
                     throw new Exception("He fell down and he cant get up.");
                 }
-            }
-            );
+            }, RetryIntervalMilliseconds, MaximumAttempts);
 
             // Assert
         }
@@ -126,10 +117,51 @@ namespace XeroThrottleAndRetry
                 attempts++;
 
                 throw new StackOverflowException("I fell down and I cant get up.");
-            }
-            );
+            }, RetryIntervalMilliseconds, MaximumAttempts);
 
             // Assert
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(OutOfMemoryException))]
+        public async Task Failed3TimesWithSameExceptionsReturnsSingleExceptionTest()
+        {
+            // Arrange
+            Task ExecuteAndFailAsync()
+            {
+                throw new OutOfMemoryException("I fell over and can't get up.");
+            }
+
+            // Act
+            await Retry.DoAsync(() => ExecuteAndFailAsync(), RetryIntervalMilliseconds, MaximumAttempts);
+        }
+
+        [TestMethod]
+        public async Task FailAndThrewAggregateExceptionTest()
+        {
+            // Arrange
+            var exceptionCount = 0;
+
+            Task ExecuteAndFailAsync()
+            {
+                if (exceptionCount == 0)
+                {
+                    exceptionCount++;
+                    throw new OutOfMemoryException("I fell over and can't umm, wossit... You know.");
+                }
+                throw new IndexOutOfRangeException("I fell over there and can't get up.");
+            }
+
+            // Act
+            try
+            {
+                await Retry.DoAsync(() => ExecuteAndFailAsync(), RetryIntervalMilliseconds, MaximumAttempts);
+            }
+            catch (AggregateException ex)
+            {
+                // Assert
+                Assert.AreEqual(3, ex.InnerExceptions.Count);
+            }
         }
     }
 }
